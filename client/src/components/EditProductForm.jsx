@@ -15,6 +15,7 @@ function EditProductForm() {
     const result = await axios(
       `http://localhost:4001/products/${params.productId}`
     );
+
     setName(result.data.data.name);
     setImageUrl(result.data.data.image);
     setPrice(result.data.data.price);
