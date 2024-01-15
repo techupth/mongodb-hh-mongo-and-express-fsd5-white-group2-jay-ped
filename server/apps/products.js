@@ -7,8 +7,22 @@ const productRouter = Router();
 const collection = db.collection("products");
 
 productRouter.get("/", async (req, res) => {
-  const product = await collection.find().toArray();
+  const category = req.query.category;
+  const keywords = req.query.keywords;
+  const query = {};
 
+  if (category) {
+    query.category = category;
+  }
+
+  if (keywords) {
+    query.name = new RegExp(keywords, "ig");
+  }
+
+  const product = await collection
+    .find(query)
+    .sort({ created_at: -1 })
+    .toArray();
   return res.json({ data: product });
 });
 
@@ -21,7 +35,8 @@ productRouter.get("/:id", async (req, res) => {
 });
 
 productRouter.post("/", async (req, res) => {
-  await collection.insertOne(req.body);
+  const productData = { ...req.body, created_at: new Date() };
+  await collection.insertOne(productData);
 
   return res.json({ message: "Product has been created successfully" });
 });

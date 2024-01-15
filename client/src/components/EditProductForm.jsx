@@ -10,6 +10,7 @@ function EditProductForm() {
   const [imageUrl, setImageUrl] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
 
   const getCurrentProduct = async () => {
     const result = await axios(
@@ -20,6 +21,7 @@ function EditProductForm() {
     setImageUrl(result.data.data.image);
     setPrice(result.data.data.price);
     setDescription(result.data.data.description);
+    setCategory(result.data.data.category);
   };
 
   const updateProduct = async () => {
@@ -28,6 +30,7 @@ function EditProductForm() {
       image: imageUrl,
       price,
       description,
+      category,
     });
     navigate("/");
   };
@@ -109,13 +112,18 @@ function EditProductForm() {
       <div className="input-container">
         <label>
           Category
-          <select id="category" name="category" value="">
-            <option disabled value="">
+          <select
+            id="category"
+            name="category"
+            defaultValue="-- Select a category --"
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option disabled hidden>
               -- Select a category --
             </option>
-            <option value="it">IT</option>
-            <option value="fashion">Fashion</option>
-            <option value="food">Food</option>
+            <option value="It">IT</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Food">Food</option>
           </select>
         </label>
       </div>
