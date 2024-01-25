@@ -6,7 +6,25 @@ const productRouter = Router();
 
 productRouter.get("/", async (req, res) => {
   const collection = db.collection("products");
-  const allProducts = await collection.find().limit(10).toArray();
+
+  const category = req.query.category;
+  const keywords = req.query.keywords;
+  const query = {};
+
+  if (category) {
+    query.category = new RegExp(category, "i");
+  }
+
+  if (keywords) {
+    query.name = new RegExp(keywords, "i");
+  }
+  //Exercise #3 ให้เพิ่มความสามารถของ API ที่เอาไว้ดูข้อมูลสินค้า โดยที่ข้อมูลของสินค้าจะเรียงตามเวลาที่สร้างล่าสุดไปยังเก่าสุด
+  const allProducts = await collection
+    .find(query)
+    .sort({ created_at: -1 })
+    .limit(10)
+    .toArray();
+
   return res.json({ data: allProducts });
 });
 
